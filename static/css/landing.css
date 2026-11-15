@@ -1,0 +1,204 @@
+/* ------------------------------------------------------------------ */
+/* Landing — Hero (centered layout)                                    */
+/* Loaded after style.css; overrides the old two-column hero.          */
+/* ------------------------------------------------------------------ */
+
+.hero {
+    display: block;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 5rem 1.5rem 5rem;
+    text-align: center;
+}
+
+.hero-inner {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+/* Pill badge */
+.hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: #e8f4ee;
+    color: #2f6f4f;
+    border: 1px solid #b9dcc8;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.45rem 1.4rem;
+    border-radius: 999px;
+    margin-bottom: 2rem;
+}
+
+.hero-pill-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #3f9a6c;
+}
+
+/* Heading */
+.hero-heading {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: clamp(2.5rem, 6.5vw, 4.25rem);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 1.75rem;
+}
+
+.hero-heading-accent { color: #4a9a74; }
+
+/* Subtitle */
+.hero-lede {
+    font-size: 1.3rem;
+    line-height: 1.7;
+    color: var(--ink-muted);
+    max-width: 640px;
+    margin: 0 auto 2.75rem;
+}
+
+/* Buttons */
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+}
+
+.hero-btn {
+    display: inline-block;
+    background: var(--ink);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 1.15rem;
+    font-weight: 600;
+    padding: 0.95rem 2.5rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.hero-btn:hover { background: var(--accent); }
+
+/* ------------------------------------------------------------------ */
+/* Dashboard preview                                                   */
+/* ------------------------------------------------------------------ */
+
+.hero-dash {
+    margin-top: 4.5rem;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    text-align: left;
+}
+
+.hero-dash-dots {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+}
+
+.dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
+.dot-red    { background: #e6908c; }
+.dot-yellow { background: #f2c66d; }
+.dot-green  { background: #a9dcc5; }
+
+/* Stat cards */
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.1rem;
+    margin-bottom: 1.1rem;
+}
+
+.hero-stat {
+    display: flex;
+    flex-direction: column;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.4rem 1.6rem;
+}
+
+.hero-stat-label {
+    font-size: 1rem;
+    color: var(--ink-muted);
+    margin-bottom: 0.6rem;
+}
+
+.hero-stat-value {
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.35rem;
+}
+
+.hero-stat-note {
+    font-size: 1rem;
+    color: var(--ink-faint);
+}
+
+.note-up   { color: var(--danger); }
+.note-good { color: #3f9a6c; }
+
+/* Category bars */
+.hero-cats {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.6rem 1.6rem 1.6rem 1.75rem;
+}
+
+.hero-cat-row {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.hero-cat-name {
+    font-size: 1.1rem;
+    color: var(--ink-soft);
+    text-align: center;
+}
+
+.hero-cat-track {
+    height: 12px;
+    background: #efede7;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.hero-cat-bar {
+    height: 100%;
+    border-radius: 999px;
+}
+
+.bar-food   { background: #e4a442; }
+.bar-travel { background: #4a86d8; }
+.bar-bills  { background: #7b72d2; }
+
+/* ------------------------------------------------------------------ */
+/* Responsive                                                          */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 700px) {
+    .hero { padding: 3rem 1rem 3rem; }
+    .hero-lede { font-size: 1.1rem; }
+    .hero-dash { margin-top: 3rem; padding: 1.25rem; }
+    .hero-stats { grid-template-columns: 1fr; }
+    .hero-cat-row { grid-template-columns: 60px 1fr; gap: 0.75rem; }
+}
