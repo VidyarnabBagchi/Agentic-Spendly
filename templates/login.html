@@ -2,6 +2,9 @@
 
 {% block title %}Sign in — Spendly{% endblock %}
 
+{# Flashes render inside the auth card below, not in base.html's banner. #}
+{% block flashes %}{% endblock %}
+
 {% block content %}
 
 <section class="auth-section">
@@ -23,12 +26,12 @@
             <div class="auth-error">{{ error }}</div>
             {% endif %}
 
-            <form method="POST" action="/login">
+            <form method="POST" action="{{ url_for('login') }}">
                 <div class="form-group">
                     <label for="email">Email address</label>
                     <input type="email" id="email" name="email"
                            class="form-input" placeholder="nitish@example.com"
-                           required autofocus>
+                           value="{{ email or '' }}" required autofocus>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>

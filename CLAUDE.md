@@ -93,10 +93,11 @@ pytest -s
 | Route | Status |
 |---|---|
 | `GET /` | Implemented — renders `landing.html` |
-| `GET /register` | Implemented — renders `register.html` |
+| `GET /register` | Implemented — renders `register.html`; redirects to `/` if already logged in |
 | `POST /register` | Implemented — creates user, redirects to login with flash |
-| `GET /login` | Implemented — renders `login.html` |
-| `GET /logout` | Stub — Step 3 |
+| `GET /login` | Implemented — renders `login.html`; redirects to `/` if already logged in |
+| `POST /login` | Implemented — verifies via `verify_user()`, sets `session` (`user_id`, `user_name`), redirects to `/`; 401 on bad credentials |
+| `GET /logout` | Implemented — clears session, flashes, redirects to `/` |
 | `GET /profile` | Stub — Step 4 |
 | `GET /expenses/add` | Stub — Step 7 |
 | `GET /expenses/<id>/edit` | Stub — Step 8 |
@@ -113,6 +114,7 @@ pytest -s
 - **Never put DB logic in route functions** — it belongs in `database/db.py`
 - **Never install new packages** mid-feature without flagging it — keep `requirements.txt` in sync
 - **Never use JS frameworks** — the frontend is intentionally vanilla
-- **`database/db.py` is currently empty** — do not assume helpers exist until the step that implements them
+- **`database/db.py` helpers so far:** `get_db()`, `init_db()`, `seed_db()`, `get_user_by_email()`, `create_user()`, `verify_user()` — do not assume others exist until the step that implements them
+- **Auth state lives in `session`** — `session["user_id"]` and `session["user_name"]` only; check `session.get("user_id")` for logged-in status
 - **FK enforcement is manual** — SQLite foreign keys are off by default; `get_db()` must run `PRAGMA foreign_keys = ON` on every connection
 - The app runs on **port 5001**, not the Flask default 5000 — don't change this

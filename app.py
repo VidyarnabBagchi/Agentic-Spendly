@@ -1,7 +1,15 @@
 import os
 import sqlite3
 
-from flask import Flask, flash, redirect, render_template, request, url_for
+from flask import (
+    Flask,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 
 from database.db import (
     create_user,
@@ -9,6 +17,7 @@ from database.db import (
     get_user_by_email,
     init_db,
     seed_db,
+    verify_user,
 )
 
 app = Flask(__name__)
@@ -21,6 +30,7 @@ with app.app_context():
 
 
 DUPLICATE_EMAIL_MSG = "An account with that email already exists."
+INVALID_LOGIN_MSG = "Invalid email or password."
 
 
 # ------------------------------------------------------------------ #
@@ -51,8 +61,22 @@ def _render_register_error(error, name, email):
     ), 400
 
 
+def _render_login_error(email):
+    """Re-render the login form with a generic error (password never echoed)."""
+    return render_template(
+        "login.html", error=INVALID_LOGIN_MSG, email=email
+    ), 401
+
+
+def _start_session(user):
+    """Start a fresh session for user, storing only id and name."""
+    session.clear()  # drop any pre-login session data (anti-fixation)
+    session["user_id"] = user["id"]
+    session["user_name"] = user["name"]
+
+
 # ------------------------------------------------------------------ #
-# Routes                                                              #
+# Routes                                                            #
 # ------------------------------------------------------------------ #
 
 @app.route("/")
@@ -62,6 +86,9 @@ def landing():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if session.get("user_id"):
+        return redirect(url_for("landing"))
+
     if request.method == "GET":
         return render_template("register.html")
 
@@ -84,9 +111,34 @@ def register():
     return redirect(url_for("login"))
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+    if session.get("user_id"):
+        return redirect(url_for("landing"))
+
+    if request.method == "GET":
+        return render_template("login.html")
+
+    email = request.form.get("email", "").strip().lower()
+    password = request.form.get("password", "")
+
+    # Bad credentials re-render the form (401) instead of abort(), so the
+    # user keeps their email. Unknown email and wrong password share one
+    # message so the form never reveals which emails are registered.
+    user = verify_user(email, password)
+    if user is None:
+        return _render_login_error(email)
+
+    _start_session(user)
+    return redirect(url_for("landing"))
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    # Flash after clear(): flashed messages are stored in the session.
+    flash("You have been signed out.", "success")
+    return redirect(url_for("landing"))
 
 
 @app.route("/terms")
@@ -102,11 +154,6 @@ def privacy():
 # ------------------------------------------------------------------ #
 # Placeholder routes — students will implement these                  #
 # ------------------------------------------------------------------ #
-
-@app.route("/logout")
-def logout():
-    return "Logout — coming in Step 3"
-
 
 @app.route("/profile")
 def profile():
