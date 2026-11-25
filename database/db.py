@@ -57,6 +57,39 @@ def init_db():
         conn.close()
 
 
+def get_user_by_email(email):
+    """Return the users row matching email exactly, or None."""
+    conn = get_db()
+    try:
+        return conn.execute(
+            "SELECT id, name, email, password_hash, created_at "
+            "FROM users WHERE email = ?",
+            (email,),
+        ).fetchone()
+    finally:
+        conn.close()
+
+
+def create_user(name, email, password):
+    """Hash password, insert a user, and return the new user id.
+
+    Raises sqlite3.IntegrityError if the email is already registered.
+    """
+    conn = get_db()
+    try:
+        cur = conn.execute(
+            "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
+            (name, email, generate_password_hash(password)),
+        )
+        conn.commit()
+        return cur.lastrowid
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+
+
 def _month_date(day):
     """Return a YYYY-MM-DD date in the current month, never in the future."""
     today = date.today()
