@@ -19,6 +19,15 @@
     --border: #e4e1da;
     --border-soft: #eeebe4;
 
+    /* Expense category colours (profile badges + breakdown bars) */
+    --cat-food: #c17f24;
+    --cat-transport: #4a78a8;
+    --cat-bills: #6c5fb5;
+    --cat-health: #2e8a62;
+    --cat-entertainment: #b8527a;
+    --cat-shopping: #1a6f7a;
+    --cat-other: #7a7a72;
+
     --font-display: 'DM Serif Display', Georgia, serif;
     --font-body: 'DM Sans', system-ui, sans-serif;
 
