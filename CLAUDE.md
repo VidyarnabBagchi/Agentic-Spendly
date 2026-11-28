@@ -18,7 +18,8 @@ spendly/
 ├── static/
 │   ├── css/
 │   │   ├── style.css       # Global styles
-│   │   └── landing.css     # Landing-page-only styles
+│   │   ├── landing.css     # Landing-page-only styles
+│   │   └── profile.css     # Profile-page-only styles
 │   └── js/
 │       └── main.js         # Vanilla JS only
 └── requirements.txt
@@ -93,12 +94,12 @@ pytest -s
 | Route | Status |
 |---|---|
 | `GET /` | Implemented — renders `landing.html` |
-| `GET /register` | Implemented — renders `register.html`; redirects to `/` if already logged in |
+| `GET /register` | Implemented — renders `register.html`; redirects to `/profile` if already logged in |
 | `POST /register` | Implemented — creates user, redirects to login with flash |
-| `GET /login` | Implemented — renders `login.html`; redirects to `/` if already logged in |
-| `POST /login` | Implemented — verifies via `verify_user()`, sets `session` (`user_id`, `user_name`), redirects to `/`; 401 on bad credentials |
+| `GET /login` | Implemented — renders `login.html`; redirects to `/profile` if already logged in |
+| `POST /login` | Implemented — verifies via `verify_user()`, sets `session` (`user_id`, `user_name`), redirects to `/profile`; 401 on bad credentials |
 | `GET /logout` | Implemented — clears session, flashes, redirects to `/` |
-| `GET /profile` | Stub — Step 4 |
+| `GET /profile` | Implemented — renders `profile.html` with hardcoded data (DB wiring in Step 5); redirects to `/login` if logged out |
 | `GET /expenses/add` | Stub — Step 7 |
 | `GET /expenses/<id>/edit` | Stub — Step 8 |
 | `GET /expenses/<id>/delete` | Stub — Step 9 |

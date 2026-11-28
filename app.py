@@ -75,6 +75,64 @@ def _start_session(user):
     session["user_name"] = user["name"]
 
 
+def _sample_profile_data():
+    """Hardcoded profile context for the Step 4 design.
+
+    Step 5 replaces this with real DB queries. Totals are derived from
+    the rows so the stats, bars and table can never disagree.
+    """
+    user = {
+        "name": "Demo User",
+        "email": "demo@spendly.com",
+        "member_since": "January 2026",
+    }
+    transactions = [  # mirrors the seed_db() sample expenses
+        {"date": "2026-11-25", "description": "Dinner out",
+         "category": "Food", "amount": 22.40},
+        {"date": "2026-11-20", "description": None,
+         "category": "Other", "amount": 9.99},
+        {"date": "2026-11-15", "description": "New shoes",
+         "category": "Shopping", "amount": 75.25},
+        {"date": "2026-11-12", "description": "Movie tickets",
+         "category": "Entertainment", "amount": 18.99},
+        {"date": "2026-11-08", "description": "Pharmacy",
+         "category": "Health", "amount": 30.00},
+        {"date": "2026-11-05", "description": "Electricity bill",
+         "category": "Bills", "amount": 120.00},
+        {"date": "2026-11-03", "description": "Metro card top-up",
+         "category": "Transport", "amount": 12.00},
+        {"date": "2026-11-01", "description": "Groceries",
+         "category": "Food", "amount": 45.50},
+    ]
+
+    totals = {}
+    for txn in transactions:
+        totals[txn["category"]] = totals.get(txn["category"], 0) + txn["amount"]
+    categories = sorted(
+        (
+            {"name": name, "slug": name.lower(), "amount": round(amount, 2)}
+            for name, amount in totals.items()
+        ),
+        key=lambda cat: cat["amount"],
+        reverse=True,
+    )
+
+    user["initials"] = "".join(
+        word[0] for word in user["name"].split()[:2]
+    ).upper()
+    stats = {
+        "total_spent": round(sum(t["amount"] for t in transactions), 2),
+        "transaction_count": len(transactions),
+        "top_category": categories[0]["name"] if categories else "—",
+    }
+    return {
+        "user": user,
+        "stats": stats,
+        "transactions": transactions,
+        "categories": categories,
+    }
+
+
 # ------------------------------------------------------------------ #
 # Routes                                                            #
 # ------------------------------------------------------------------ #
@@ -87,7 +145,7 @@ def landing():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if session.get("user_id"):
-        return redirect(url_for("landing"))
+        return redirect(url_for("profile"))
 
     if request.method == "GET":
         return render_template("register.html")
@@ -114,7 +172,7 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if session.get("user_id"):
-        return redirect(url_for("landing"))
+        return redirect(url_for("profile"))
 
     if request.method == "GET":
         return render_template("login.html")
@@ -130,7 +188,7 @@ def login():
         return _render_login_error(email)
 
     _start_session(user)
-    return redirect(url_for("landing"))
+    return redirect(url_for("profile"))
 
 
 @app.route("/logout")
@@ -139,6 +197,13 @@ def logout():
     # Flash after clear(): flashed messages are stored in the session.
     flash("You have been signed out.", "success")
     return redirect(url_for("landing"))
+
+
+@app.route("/profile")
+def profile():
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+    return render_template("profile.html", **_sample_profile_data())
 
 
 @app.route("/terms")
@@ -154,11 +219,6 @@ def privacy():
 # ------------------------------------------------------------------ #
 # Placeholder routes — students will implement these                  #
 # ------------------------------------------------------------------ #
-
-@app.route("/profile")
-def profile():
-    return "Profile page — coming in Step 4"
-
 
 @app.route("/expenses/add")
 def add_expense():

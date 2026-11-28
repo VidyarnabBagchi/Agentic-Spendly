@@ -29,17 +29,17 @@ def test_get_login_renders_form(client):
     assert b'name="password"' in resp.data
 
 
-def test_valid_login_redirects_to_landing(client, user):
+def test_valid_login_redirects_to_profile(client, user):
     resp = post_login(client)
 
     assert resp.status_code == 302
-    assert resp.headers["Location"].endswith("/")
+    assert resp.headers["Location"].endswith("/profile")
 
 
 def test_navbar_shows_greeting_after_login(client, user):
     resp = post_login(client, follow_redirects=True)
 
-    assert resp.request.path == "/"
+    assert resp.request.path == "/profile"
     assert b"Hi, Demo User" in resp.data
     assert b"Sign out" in resp.data
 
@@ -83,7 +83,7 @@ def test_login_page_redirects_when_logged_in(client, user):
     resp = client.get("/login")
 
     assert resp.status_code == 302
-    assert resp.headers["Location"].endswith("/")
+    assert resp.headers["Location"].endswith("/profile")
 
 
 @pytest.mark.parametrize("method", ["get", "post"])
@@ -94,7 +94,7 @@ def test_register_redirects_when_logged_in(client, user, users_with_email, metho
     resp = getattr(client, method)("/register", data=data)
 
     assert resp.status_code == 302
-    assert resp.headers["Location"].endswith("/")
+    assert resp.headers["Location"].endswith("/profile")
     assert users_with_email("other@example.com") == []
 
 
